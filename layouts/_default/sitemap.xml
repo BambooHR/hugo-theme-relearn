@@ -2,7 +2,7 @@
 {{- printf "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\" ?>" | safeHTML }}
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
 {{- range where .Pages "Sitemap.Disable" "ne" true }}
-  {{- if partial "_relearn/pageIsSpecial.gotmpl" . }}
+  {{- if hasPrefix .Path "/_relearn" }}
   {{- else if and .Title .RelPermalink (or (ne site.Params.disableSeoHiddenPages true) (not (partialCached "_relearn/pageIsHiddenSelfOrAncestor.gotmpl" (dict "page" . "to" site.Home) .Path site.Home.Path) ) ) }}
   <url>
     <loc>{{ partial "permalink.gotmpl" (dict "to" . "abs" true) }}</loc>{{ if not .Lastmod.IsZero }}
@@ -10,7 +10,7 @@
     <changefreq>{{ . }}</changefreq>{{ end }}{{ if ge .Sitemap.Priority 0.0 }}
     <priority>{{ .Sitemap.Priority }}</priority>{{ end }}{{ if .IsTranslated }}{{ range $index, $trans := .AllTranslations }}{{- if eq $index 0 }}
     <xhtml:link rel="alternate" hreflang="x-default" href="{{ partial "permalink.gotmpl" (dict "to" . "abs" true) }}" />{{ end }}
-    <xhtml:link rel="alternate" hreflang="{{ .Language.LanguageCode }}" href="{{ partial "permalink.gotmpl" (dict "to" . "abs" true) }}" />{{ end }}{{ end }}
+    <xhtml:link rel="alternate" hreflang="{{ .Language.Locale }}" href="{{ partial "permalink.gotmpl" (dict "to" . "abs" true) }}" />{{ end }}{{ end }}
   </url>
   {{- end -}}
 {{- end }}
